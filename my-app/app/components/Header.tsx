@@ -1,4 +1,16 @@
+import Image from "next/image";
 import Link from "next/link";
+
+type SiteSettings = {
+  name: string;
+  logo?: {
+    url: string;
+  } | null;
+};
+
+type SiteSettingsResponse = {
+  data: SiteSettings[];
+};
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -6,14 +18,39 @@ const navItems = [
   { name: "Services", href: "/services" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
+  { name: "Team", href: "/team" },
 ];
 
-export default function Header() {
+export default async function Header() {
+  const response = await fetch(
+    "http://localhost:1337/api/site-settings?populate=logo",
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch site settings");
+  }
+
+  const result: SiteSettingsResponse = await response.json();
+  const siteSettings = result.data[0];
+
   return (
     <header className="border-b bg-white">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-2xl font-bold">
-          IFCS
+        <Link href="/" className="flex items-center">
+          {siteSettings.logo?.url ? (
+            <Image
+              src={`http://localhost:1337${siteSettings.logo.url}`}
+              alt={siteSettings.name}
+              width={100}
+              height={50}
+              unoptimized
+              className="h-12 w-auto object-contain"
+            />
+          ) : (
+            <span className="text-2xl font-bold text-gray-900">
+              {siteSettings.name}
+            </span>
+          )}
         </Link>
 
         <nav className="flex gap-6">
@@ -21,7 +58,7 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-gray-700 hover:text-black"
+              className="text-gray-700 transition hover:text-black"
             >
               {item.name}
             </Link>

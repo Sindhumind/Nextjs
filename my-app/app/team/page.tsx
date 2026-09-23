@@ -1,69 +1,28 @@
-import Image from "next/image";
-
-type TeamMember = {
-  id: number;
-  name: string;
-  designation: string;
-  bio: string;
-  photo?: {
-    url: string;
-  };
-};
-
-type TeamMembersResponse = {
-  data: TeamMember[];
-};
+import TeamCard from "../components/TeamCard";
+import { fetchTeam } from "../lib/api/team";
 
 export default async function Team() {
-  const response = await fetch(
-    "http://localhost:1337/api/team-members?populate=photo",
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch team members");
-  }
-
-  const result: TeamMembersResponse = await response.json();
+  const team = await fetchTeam();
 
   return (
-    <main className="px-6 py-20">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-center text-4xl font-bold">Our Team</h1>
+    <main className="bg-white dark:bg-gray-950">
+      <section className="bg-gray-900 px-6 py-20 text-center text-white">
+        <h1 className="text-4xl font-bold">Our Team</h1>
 
-        <p className="mx-auto mt-4 max-w-2xl text-center text-gray-600">
-          Meet the team behind IFCS and our flight catering solutions.
+        <p className="mx-auto mt-4 max-w-2xl text-gray-300">
+          Meet the people behind our aviation catering solutions.
         </p>
+      </section>
 
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
-          {result.data.map((member) => (
-            <div
-              key={member.id}
-              className="rounded-lg border bg-white p-6 text-center shadow-sm"
-            >
-              {member.photo?.url && (
-                <Image
-                  src={`http://localhost:1337${member.photo.url}`}
-                  alt={member.name}
-                  width={128}
-                  height={128}
-                  className="mx-auto h-32 w-32 rounded-full object-cover"
-                  unoptimized
-                />
-              )}
-
-              <h2 className="mt-5 text-xl font-semibold">{member.name}</h2>
-
-              <p className="mt-2 font-medium text-gray-600">
-                {member.designation}
-              </p>
-
-              <p className="mt-4 text-sm leading-6 text-gray-600">
-                {member.bio}
-              </p>
-            </div>
-          ))}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-8 md:grid-cols-3">
+            {team.map((member) => (
+              <TeamCard key={member.id} member={member} />
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }

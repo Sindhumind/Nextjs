@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
+import ThemeToggle from "./ThemeToggle";
 type SiteSettings = {
   name: string;
   logo?: {
@@ -44,6 +44,7 @@ export default async function Header() {
               width={100}
               height={50}
               unoptimized
+              loading="eager"
               className="h-12 w-auto object-contain"
             />
           ) : (
@@ -63,6 +64,7 @@ export default async function Header() {
               {item.name}
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

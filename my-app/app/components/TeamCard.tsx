@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { TeamMember } from "../type/team";
+import Link from "next/link";
 
 type TeamCardProps = {
   member: TeamMember;
@@ -32,6 +33,12 @@ export default function TeamCard({ member }: TeamCardProps) {
       <p className="mt-4 leading-7 text-gray-600 dark:text-gray-300">
         {member.bio}
       </p>
+      <Link
+        href={`/team/${member.documentId}`}
+        className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-2 text-white hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+      >
+        View Profile
+      </Link>
     </article>
   );
 }

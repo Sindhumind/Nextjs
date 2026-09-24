@@ -5,6 +5,7 @@ import ServiceCard from "./components/ServiceCard";
 import { fetchBlogs } from "./lib/api/blog";
 import { fetchServices } from "./lib/api/service";
 import { fetchSiteSettings } from "./lib/api/siteSettings";
+import { STRAPI_URL } from "../app/lib/api/config";
 
 export default async function Home() {
   const [siteSettings, services, blogs] = await Promise.all([
@@ -20,7 +21,7 @@ export default async function Home() {
     .slice(0, 3);
 
   const heroImageUrl = siteSettings.heroImage?.url
-    ? `http://localhost:1337${siteSettings.heroImage.url}`
+    ? `${STRAPI_URL}${siteSettings.heroImage.url}`
     : null;
 
   return (

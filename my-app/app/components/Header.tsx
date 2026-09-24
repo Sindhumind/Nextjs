@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
+import { STRAPI_URL } from "../lib/api/config";
 type SiteSettings = {
   name: string;
   logo?: {
@@ -22,9 +23,7 @@ const navItems = [
 ];
 
 export default async function Header() {
-  const response = await fetch(
-    "http://localhost:1337/api/site-settings?populate=logo",
-  );
+  const response = await fetch(`${STRAPI_URL}/api/site-settings?populate=logo`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch site settings");
@@ -39,7 +38,7 @@ export default async function Header() {
         <Link href="/" className="flex items-center">
           {siteSettings.logo?.url ? (
             <Image
-              src={`http://localhost:1337${siteSettings.logo.url}`}
+              src={`${STRAPI_URL}${siteSettings.logo.url}`}
               alt={siteSettings.name}
               width={100}
               height={50}

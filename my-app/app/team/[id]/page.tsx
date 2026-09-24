@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { fetchTeam, fetchTeamMember } from "../../lib/api/team";
+import { STRAPI_URL } from "../../lib/api/config";
 
 export async function generateStaticParams() {
   const team = await fetchTeam();
@@ -36,7 +37,7 @@ export default async function TeamMemberDetail({
         <div className="mx-auto max-w-3xl text-center">
           {member.photo?.url && (
             <Image
-              src={`http://localhost:1337${member.photo.url}`}
+              src={`${STRAPI_URL}${member.photo.url}`}
               alt={member.name}
               width={200}
               height={200}

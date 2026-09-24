@@ -1,8 +1,9 @@
 import type { Service } from "../../type/service";
+import { STRAPI_URL } from "./config";
 
 export async function fetchServices(): Promise<Service[]> {
   const response = await fetch(
-    "http://localhost:1337/api/services?populate=image"
+    `${STRAPI_URL}/api/services?populate=image`
   );
 
   if (!response.ok) {

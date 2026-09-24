@@ -1,10 +1,11 @@
 import type { ContactFormData } from "../../type/contact";
+import { STRAPI_URL } from "./config";
 
 export async function submitContactForm(
   formData: ContactFormData
 ) {
   const response = await fetch(
-    "http://localhost:1337/api/contact-messages",
+    `${STRAPI_URL}/api/contact-messages`,
     {
       method: "POST",
       headers: {

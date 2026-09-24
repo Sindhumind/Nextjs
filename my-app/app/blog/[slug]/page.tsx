@@ -1,3 +1,4 @@
+import { STRAPI_URL } from "../../lib/api/config";
 export const revalidate = 60;
 
 type RichTextChild = {
@@ -45,7 +46,7 @@ function RichText({ content }: { content: RichTextBlock[] }) {
 }
 
 export async function generateStaticParams() {
-  const response = await fetch("http://localhost:1337/api/blog-posts");
+  const response = await fetch(`${STRAPI_URL}/api/blog-posts`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch blog posts");
@@ -66,7 +67,7 @@ export default async function BlogDetail({
   const { slug } = await params;
 
   const response = await fetch(
-    `http://localhost:1337/api/blog-posts?filters[slug][$eq]=${slug}`,
+    `/api/blog-posts?filters[slug][$eq]=${slug}`,
   );
 
   if (!response.ok) {

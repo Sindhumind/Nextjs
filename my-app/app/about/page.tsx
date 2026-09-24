@@ -2,6 +2,7 @@ import Image from "next/image";
 import TeamCard from "../components/TeamCard";
 import { fetchSiteSettings } from "../lib/api/siteSettings";
 import { fetchTeam } from "../lib/api/team";
+import { STRAPI_URL } from "../lib/api/config";
 
 export default async function About() {
   const [siteSettings, team] = await Promise.all([
@@ -10,7 +11,7 @@ export default async function About() {
   ]);
 
   const heroImageUrl = siteSettings.heroImage?.url
-    ? `http://localhost:1337${siteSettings.heroImage.url}`
+    ? `${STRAPI_URL}${siteSettings.heroImage.url}`
     : null;
 
   return (

@@ -1,7 +1,10 @@
 import type { Blog } from "../../type/blog";
+import { STRAPI_URL } from "./config";
 
 export async function fetchBlogs(): Promise<Blog[]> {
-  const response = await fetch("http://localhost:1337/api/blog-posts");
+  const response = await fetch(
+    `${STRAPI_URL}/api/blog-posts`
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch blog posts");
@@ -12,9 +15,11 @@ export async function fetchBlogs(): Promise<Blog[]> {
   return result.data;
 }
 
-export async function fetchBlogBySlug(slug: string) {
+export async function fetchBlogBySlug(
+  slug: string
+): Promise<Blog | null> {
   const response = await fetch(
-    `http://localhost:1337/api/blog-posts?filters[slug][$eq]=${slug}`
+    `${STRAPI_URL}/api/blog-posts?filters[slug][$eq]=${slug}`
   );
 
   if (!response.ok) {

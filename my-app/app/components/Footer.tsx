@@ -1,3 +1,4 @@
+import { STRAPI_URL } from "../lib/api/config";
 type SiteSettings = {
   footerText: string;
 };
@@ -7,7 +8,7 @@ type SiteSettingsResponse = {
 };
 
 export default async function Footer() {
-  const response = await fetch("http://localhost:1337/api/site-settings", {
+  const response = await fetch(`${STRAPI_URL}/api/site-settings`, {
     cache: "no-store",
   });
 

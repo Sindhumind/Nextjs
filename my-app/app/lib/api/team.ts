@@ -1,8 +1,9 @@
 import type { TeamMember } from "../../type/team";
+import { STRAPI_URL } from "./config";
 
 export async function fetchTeam(): Promise<TeamMember[]> {
   const response = await fetch(
-    "http://localhost:1337/api/team-members?populate=photo"
+    `${STRAPI_URL}/api/team-members?populate=photo`
   );
 
   if (!response.ok) {
@@ -14,9 +15,11 @@ export async function fetchTeam(): Promise<TeamMember[]> {
   return result.data;
 }
 
-export async function fetchTeamMember(id: string): Promise<TeamMember | null> {
+export async function fetchTeamMember(
+  documentId: string
+): Promise<TeamMember | null> {
   const response = await fetch(
-    `http://localhost:1337/api/team-members/${id}?populate=photo`
+    `${STRAPI_URL}/api/team-members/${documentId}?populate=photo`
   );
 
   if (!response.ok) {

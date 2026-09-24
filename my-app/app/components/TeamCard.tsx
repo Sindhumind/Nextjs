@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { TeamMember } from "../type/team";
 import Link from "next/link";
+import { STRAPI_URL } from "../lib/api/config";
 
 type TeamCardProps = {
   member: TeamMember;
@@ -11,7 +12,7 @@ export default function TeamCard({ member }: TeamCardProps) {
     <article className="rounded-2xl border bg-white p-8 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
       {member.photo?.url ? (
         <Image
-          src={`http://localhost:1337${member.photo.url}`}
+          src={`${STRAPI_URL}${member.photo.url}`}
           alt={member.name}
           width={128}
           height={128}

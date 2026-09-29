@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { ContactFormData } from "../type/contact";
+
+import type { ContactFormData } from "../types/contact";
 import { submitContactForm } from "../lib/api/contact";
 
 export default function ContactForm() {
@@ -25,14 +26,47 @@ export default function ContactForm() {
     }));
   }
 
+  function validateEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setSubmitted(false);
     setError("");
 
+    const name1 = formData.name.trim();
+    const email1 = formData.email.trim();
+    const message1 = formData.message.trim();
+
+    // Validate required fields
+    if (!name1 || !email1 || !message1) {
+      setError("Fill all fields");
+      return;
+    }
+
+    // Validate email
+    if (!validateEmail(email1)) {
+      setError("Please enter a valid email");
+      return;
+    }
+
+    // Validate message length
+    if (message1.length < 10) {
+      setError("Please enter at least 10 characters in the message");
+      return;
+    }
+
+    // Create cleaned data for submission
+    const cleanedData = {
+      name: name1,
+      email: email1,
+      message: message1,
+    };
+
     try {
-      await submitContactForm(formData);
+      await submitContactForm(cleanedData);
 
       setSubmitted(true);
 
@@ -97,12 +131,16 @@ export default function ContactForm() {
       </div>
 
       {submitted && (
-        <p className="text-green-600">
+        <p role="status" className="text-green-600">
           Your message has been submitted successfully.
         </p>
       )}
 
-      {error && <p className="text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-red-600">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"

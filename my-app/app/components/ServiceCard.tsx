@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Service } from "../type/service";
+import type { Service } from "../types/service";
 import { STRAPI_URL } from "../lib/api/config";
 
 type ServiceCardProps = {
@@ -7,12 +7,18 @@ type ServiceCardProps = {
 };
 
 export default function ServiceCard({ service }: ServiceCardProps) {
+  const serviceImageUrl = service.image?.url
+    ? `/api/strapi-image?url=${encodeURIComponent(
+        `${STRAPI_URL}${service.image.url}`,
+      )}`
+    : null;
+
   return (
     <article className="overflow-hidden rounded-lg border bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-      {service.image?.url ? (
+      {serviceImageUrl ? (
         <div className="relative h-52 w-full">
           <Image
-             src={`${STRAPI_URL}${service.image.url}`}
+            src={serviceImageUrl}
             alt={service.title}
             fill
             unoptimized

@@ -1,9 +1,14 @@
-import type { Blog } from "../../type/blog";
+import type { Blog } from "../../types/blog";
 import { STRAPI_URL } from "./config";
+import { fetchFromStrapi } from "./fetcher";
+
+function isValidSlug(slug: string) {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+}
 
 export async function fetchBlogs(): Promise<Blog[]> {
-  const response = await fetch(
-    `${STRAPI_URL}/api/blog-posts`
+  const response = await fetchFromStrapi(
+    `${STRAPI_URL}/api/blog-posts`,
   );
 
   if (!response.ok) {
@@ -15,11 +20,25 @@ export async function fetchBlogs(): Promise<Blog[]> {
   return result.data;
 }
 
+export async function fetchBlogsFromApi(): Promise<Blog[]> {
+  const response = await fetch("/api/blogs");
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch blog posts");
+  }
+
+  return response.json();
+}
+
 export async function fetchBlogBySlug(
-  slug: string
+  slug: string,
 ): Promise<Blog | null> {
-  const response = await fetch(
-    `${STRAPI_URL}/api/blog-posts?filters[slug][$eq]=${slug}`
+  if (!isValidSlug(slug)) {
+    return null;
+  }
+
+  const response = await fetchFromStrapi(
+    `${STRAPI_URL}/api/blog-posts?filters[slug][$eq]=${encodeURIComponent(slug)}`,
   );
 
   if (!response.ok) {

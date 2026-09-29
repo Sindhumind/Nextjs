@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import TeamCard from "../components/TeamCard";
 import { fetchSiteSettings } from "../lib/api/siteSettings";
 import { fetchTeam } from "../lib/api/team";
@@ -11,7 +12,9 @@ export default async function About() {
   ]);
 
   const heroImageUrl = siteSettings.heroImage?.url
-    ? `${STRAPI_URL}${siteSettings.heroImage.url}`
+    ? `/api/strapi-image?url=${encodeURIComponent(
+        `${STRAPI_URL}${siteSettings.heroImage.url}`,
+      )}`
     : null;
 
   return (
@@ -86,11 +89,17 @@ export default async function About() {
             </p>
           </div>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            {team.map((member) => (
-              <TeamCard key={member.id} member={member} />
-            ))}
-          </div>
+          {team.length > 0 ? (
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {team.map((member) => (
+                <TeamCard key={member.id} member={member} />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-12 text-center text-gray-600 dark:text-gray-300">
+              No team members are available at the moment.
+            </p>
+          )}
         </div>
       </section>
     </main>

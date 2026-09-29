@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+
 import { fetchTeam, fetchTeamMember } from "../../lib/api/team";
 import { STRAPI_URL } from "../../lib/api/config";
 
@@ -25,6 +26,12 @@ export default async function TeamMemberDetail({
     notFound();
   }
 
+  const memberPhotoUrl = member.photo?.url
+    ? `/api/strapi-image?url=${encodeURIComponent(
+        `${STRAPI_URL}${member.photo.url}`,
+      )}`
+    : null;
+
   return (
     <main className="bg-white dark:bg-gray-950">
       <section className="bg-gray-900 px-6 py-20 text-center text-white">
@@ -35,15 +42,19 @@ export default async function TeamMemberDetail({
 
       <section className="px-6 py-20">
         <div className="mx-auto max-w-3xl text-center">
-          {member.photo?.url && (
+          {memberPhotoUrl ? (
             <Image
-              src={`${STRAPI_URL}${member.photo.url}`}
+              src={memberPhotoUrl}
               alt={member.name}
               width={200}
               height={200}
               unoptimized
               className="mx-auto h-48 w-48 rounded-full object-cover"
             />
+          ) : (
+            <div className="mx-auto flex h-48 w-48 items-center justify-center rounded-full bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-300">
+              No Photo
+            </div>
           )}
 
           <h2 className="mt-8 text-2xl font-bold text-gray-900 dark:text-white">

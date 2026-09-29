@@ -1,8 +1,9 @@
-import type { TeamMember } from "../../type/team";
+import type { TeamMember } from "../../types/team";
 import { STRAPI_URL } from "./config";
+import { fetchFromStrapi } from "./fetcher";
 
 export async function fetchTeam(): Promise<TeamMember[]> {
-  const response = await fetch(
+   const response = await fetchFromStrapi(
     `${STRAPI_URL}/api/team-members?populate=photo`
   );
 

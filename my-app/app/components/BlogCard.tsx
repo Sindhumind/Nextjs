@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { Blog } from "../type/blog";
+import type { Blog } from "../types/blog";
 
 type BlogCardProps = {
   blog: Blog;
@@ -22,11 +22,12 @@ export default function BlogCard({ blog }: BlogCardProps) {
       </div>
 
       <Link
-        href={`/blog/${blog.slug}`}
-        className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-2 text-white hover:bg-gray-700"
-      >
-        Read More
-      </Link>
+  href={`/blog/${blog.slug}`}
+  aria-label={`Read more about ${blog.title}`}
+  className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-2 text-white hover:bg-gray-700"
+>
+  Read More
+</Link>
     </article>
   );
 }

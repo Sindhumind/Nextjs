@@ -16,11 +16,17 @@ export default async function Team() {
 
       <section className="px-6 py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-8 md:grid-cols-3">
-            {team.map((member) => (
-              <TeamCard key={member.id} member={member} />
-            ))}
-          </div>
+          {team.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-3">
+              {team.map((member) => (
+                <TeamCard key={member.id} member={member} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-10 text-center text-gray-600 dark:text-gray-300">
+              No team members are available at the moment.
+            </p>
+          )}
         </div>
       </section>
     </main>

@@ -5,7 +5,7 @@ import ServiceCard from "./components/ServiceCard";
 import { fetchBlogs } from "./lib/api/blog";
 import { fetchServices } from "./lib/api/service";
 import { fetchSiteSettings } from "./lib/api/siteSettings";
-import { STRAPI_URL } from "../app/lib/api/config";
+import { STRAPI_URL } from "./lib/api/config";
 
 export default async function Home() {
   const [siteSettings, services, blogs] = await Promise.all([
@@ -21,7 +21,9 @@ export default async function Home() {
     .slice(0, 3);
 
   const heroImageUrl = siteSettings.heroImage?.url
-    ? `${STRAPI_URL}${siteSettings.heroImage.url}`
+    ? `/api/strapi-image?url=${encodeURIComponent(
+        `${STRAPI_URL}${siteSettings.heroImage.url}`,
+      )}`
     : null;
 
   return (
@@ -54,7 +56,7 @@ export default async function Home() {
             {heroImageUrl ? (
               <Image
                 src={heroImageUrl}
-                alt="IFCS flight catering"
+                alt="Flight catering operations"
                 fill
                 unoptimized
                 priority

@@ -17,11 +17,17 @@ export default async function Services() {
 
       <section className="px-6 py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-8 md:grid-cols-3">
-            {services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
-            ))}
-          </div>
+          {services.length > 0 ? (
+            <div className="grid gap-8 md:grid-cols-3">
+              {services.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
+            </div>
+          ) : (
+            <p className="py-10 text-center text-gray-600 dark:text-gray-300">
+              No services are available at the moment.
+            </p>
+          )}
         </div>
       </section>
     </main>

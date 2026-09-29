@@ -3,7 +3,8 @@
 import { useState } from "react";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
-import { fetchBlogs } from "../lib/api/blog";
+import { fetchBlogsFromApi } from "../lib/api/blog";
+import type { Blog } from "../types/blog";
 
 export default function Blog() {
   const [search, setSearch] = useState("");
@@ -12,9 +13,9 @@ export default function Blog() {
     data: blogs,
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Blog[]>({
     queryKey: ["blogs"],
-    queryFn: fetchBlogs,
+    queryFn: fetchBlogsFromApi,
   });
 
   if (isLoading) {
@@ -56,8 +57,13 @@ export default function Blog() {
       <section className="px-6 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="mx-auto max-w-xl">
+            <label htmlFor="search" className="sr-only">
+              Search blog posts
+            </label>
+
             <input
               type="search"
+              id="search"
               placeholder="Search blog posts..."
               value={search}
               onChange={(event) => setSearch(event.target.value)}

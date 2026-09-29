@@ -1,8 +1,10 @@
-import { STRAPI_URL } from "../../lib/api/config";
+import { notFound } from "next/navigation";
+import { fetchBlogBySlug, fetchBlogs } from "../../lib/api/blog";
+
 export const revalidate = 60;
 
 type RichTextChild = {
-  type: string;
+  type?: string;
   text?: string;
 };
 
@@ -11,24 +13,44 @@ type RichTextBlock = {
   children?: RichTextChild[];
 };
 
-type Blog = {
-  id: number;
-  title: string;
-  slug: string;
-  author: string;
-  date: string;
-  description: string;
-  content: RichTextBlock[];
-};
-
-type BlogsResponse = {
-  data: Blog[];
-};
-
-function RichText({ content }: { content: RichTextBlock[] }) {
+function isRichTextBlockArray(value: unknown): value is RichTextBlock[] {
   return (
-    <div className="mt-8 space-y-4 leading-8 text-gray-700">
-      {content.map((block, index) => {
+    Array.isArray(value) &&
+    value.every((block) => {
+      if (typeof block !== "object" || block === null) {
+        return false;
+      }
+
+      const typedBlock = block as Record<string, unknown>;
+
+      return (
+        typeof typedBlock.type === "string" &&
+        (!("children" in typedBlock) ||
+          (Array.isArray(typedBlock.children) &&
+            typedBlock.children.every((child) => {
+              if (typeof child !== "object" || child === null) {
+                return false;
+              }
+
+              const typedChild = child as Record<string, unknown>;
+
+              return (
+                (!("type" in typedChild) ||
+                  typeof typedChild.type === "string") &&
+                (!("text" in typedChild) || typeof typedChild.text === "string")
+              );
+            })))
+      );
+    })
+  );
+}
+
+function RichText({ content }: { content: unknown }) {
+  const safeContent = isRichTextBlockArray(content) ? content : [];
+
+  return (
+    <div className="mt-8 space-y-4 leading-8 text-gray-700 dark:text-gray-300">
+      {safeContent.map((block, index) => {
         if (block.type === "paragraph") {
           return (
             <p key={index}>
@@ -46,15 +68,9 @@ function RichText({ content }: { content: RichTextBlock[] }) {
 }
 
 export async function generateStaticParams() {
-  const response = await fetch(`${STRAPI_URL}/api/blog-posts`);
+  const blogs = await fetchBlogs();
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch blog posts");
-  }
-
-  const result: BlogsResponse = await response.json();
-
-  return result.data.map((blog) => ({
+  return blogs.map((blog) => ({
     slug: blog.slug,
   }));
 }
@@ -66,43 +82,27 @@ export default async function BlogDetail({
 }) {
   const { slug } = await params;
 
-  const response = await fetch(
-    `/api/blog-posts?filters[slug][$eq]=${slug}`,
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch blog post");
-  }
-
-  const result: BlogsResponse = await response.json();
-
-  const blog = result.data[0];
+  const blog = await fetchBlogBySlug(slug);
 
   if (!blog) {
-    return (
-      <main className="px-6 py-20">
-        <div className="mx-auto max-w-3xl">
-          <h1 className="text-3xl font-bold">Blog post not found</h1>
-
-          <p className="mt-4 text-gray-600">
-            The blog post you are looking for does not exist.
-          </p>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   return (
     <main className="px-6 py-20">
       <article className="mx-auto max-w-3xl">
-        <h1 className="text-4xl font-bold">{blog.title}</h1>
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+          {blog.title}
+        </h1>
 
-        <div className="mt-4 text-sm text-gray-500">
+        <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
           <p>Author: {blog.author}</p>
           <p>Published: {blog.date}</p>
         </div>
 
-        <p className="mt-8 text-lg text-gray-600">{blog.description}</p>
+        <p className="mt-8 text-lg text-gray-600 dark:text-gray-300">
+          {blog.description}
+        </p>
 
         <RichText content={blog.content} />
       </article>

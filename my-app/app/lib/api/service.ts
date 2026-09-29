@@ -1,8 +1,9 @@
-import type { Service } from "../../type/service";
+import type { Service } from "../../types/service";
 import { STRAPI_URL } from "./config";
+import { fetchFromStrapi } from "./fetcher";
 
 export async function fetchServices(): Promise<Service[]> {
-  const response = await fetch(
+  const response = await fetchFromStrapi(
     `${STRAPI_URL}/api/services?populate=image`
   );
 

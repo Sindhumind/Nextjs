@@ -1,6 +1,7 @@
 import Image from "next/image";
-import type { TeamMember } from "../type/team";
 import Link from "next/link";
+
+import type { TeamMember } from "../types/team";
 import { STRAPI_URL } from "../lib/api/config";
 
 type TeamCardProps = {
@@ -8,11 +9,17 @@ type TeamCardProps = {
 };
 
 export default function TeamCard({ member }: TeamCardProps) {
+  const memberPhotoUrl = member.photo?.url
+    ? `/api/strapi-image?url=${encodeURIComponent(
+        `${STRAPI_URL}${member.photo.url}`,
+      )}`
+    : null;
+
   return (
     <article className="rounded-2xl border bg-white p-8 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
-      {member.photo?.url ? (
+      {memberPhotoUrl ? (
         <Image
-          src={`${STRAPI_URL}${member.photo.url}`}
+          src={memberPhotoUrl}
           alt={member.name}
           width={128}
           height={128}
@@ -34,8 +41,10 @@ export default function TeamCard({ member }: TeamCardProps) {
       <p className="mt-4 leading-7 text-gray-600 dark:text-gray-300">
         {member.bio}
       </p>
+
       <Link
         href={`/team/${member.documentId}`}
+        aria-label={`View profile of ${member.name}`}
         className="mt-6 inline-block rounded-lg bg-gray-900 px-5 py-2 text-white hover:bg-gray-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
       >
         View Profile

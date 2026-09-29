@@ -1,9 +1,10 @@
-import type { SiteSettings } from "../../type/site";
+import type { SiteSettings } from "../../types/site";
 import { STRAPI_URL } from "./config";
+import { fetchFromStrapi } from "./fetcher";
 
 export async function fetchSiteSettings(): Promise<SiteSettings> {
-  const response = await fetch(
-    `${STRAPI_URL}/api/site-settings?populate=heroImage`
+   const response = await fetchFromStrapi(
+   `${STRAPI_URL}/api/site-settings?populate=heroImage`
   );
 
   if (!response.ok) {

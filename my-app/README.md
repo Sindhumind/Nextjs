@@ -1,36 +1,199 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# IFCS Company Website
 
-## Getting Started
+This project is a company website for IFCS, an aviation catering software company.
 
-First, run the development server:
+The frontend is built using Next.js and the content is managed through Strapi CMS. The project includes company information, services, team members, blog posts, and a contact form.
+
+## Technologies Used
+
+- Next.js 16
+- React
+- TypeScript
+- Tailwind CSS
+- React Query
+- Strapi CMS
+- REST API
+
+## Features
+
+- Home page with company information, services, and latest blog posts
+- About page with mission, vision, and team information
+- Services page with services loaded from Strapi
+- Team page with team members loaded from Strapi
+- Individual team member pages
+- Blog listing with search
+- Individual blog pages using dynamic routing
+- Contact form with validation
+- Contact messages stored in Strapi
+- Light and dark mode
+- Responsive design
+- Loading, error, and empty states
+- Active navigation highlighting
+
+## Strapi CMS
+
+The following content is managed through Strapi:
+
+- Site Settings
+- Services
+- Team Members
+- Blog Posts
+- Contact Messages
+
+## Environment Setup
+
+Create a `.env.local` file in the Next.js project:
+
+```env
+NEXT_PUBLIC_STRAPI_URL=http://localhost:1337
+```
+
+Do not commit `.env.local` to Git.
+
+An `.env.example` file is included in the project as a reference.
+
+## Running the Project
+
+### 1. Start Strapi CMS
+
+Open a terminal and go to the Strapi project.
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+Start Strapi:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Strapi will run at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:1337
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The Strapi admin panel is available at:
 
-## Learn More
+```text
+http://localhost:1337/admin
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Start Next.js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open another terminal and go to the Next.js project.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Install the dependencies:
 
-## Deploy on Vercel
+```bash
+npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Start the development server:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev
+```
+
+The website will run at:
+
+```text
+http://localhost:3000
+```
+
+## API Integration
+
+The Next.js application communicates with Strapi using REST APIs.
+
+The main CMS data used by the application includes:
+
+- Site Settings
+- Services
+- Team Members
+- Blog Posts
+- Contact Messages
+
+## Security and Validation
+
+The project includes validation and security checks for API requests.
+
+### Contact Form
+
+The contact API validates:
+
+- Required fields
+- Email format
+- Name length
+- Email length
+- Message length
+
+### Image Proxy
+
+The image proxy validates:
+
+- Image URL
+- Strapi origin
+- Upload path
+- Image content type
+- Image size
+
+### API Requests
+
+Requests to Strapi are restricted to the configured Strapi URL.
+
+## Next.js Features Used
+
+- App Router
+- Server Components
+- Client Components
+- Dynamic routes
+- `generateStaticParams`
+- Incremental Static Regeneration
+- API Route Handlers
+- `notFound()`
+- Loading and error handling
+- `next/image`
+
+## Project Structure
+
+```text
+app/
+├── api/
+│   ├── blogs/
+│   ├── contact/
+│   └── strapi-image/
+├── about/
+├── blog/
+│   └── [slug]/
+├── contact/
+├── services/
+├── team/
+│   └── [id]/
+├── components/
+├── lib/
+│   └── api/
+├── types/
+├── layout.tsx
+└── page.tsx
+```
+
+## Validation
+
+The project can be checked using:
+
+```bash
+npm run lint
+```
+
+The production build can be checked using:
+
+```bash
+npm run build
+```
+
+## Author
+
+Sindhuja Pendyala

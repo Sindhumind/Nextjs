@@ -1,69 +1,61 @@
-import Image from "next/image";
-import Link from "next/link";
-import ThemeToggle from "./ThemeToggle";
-import { STRAPI_URL } from "../lib/api/config";
-type SiteSettings = {
-  name: string;
-  logo?: {
-    url: string;
-  } | null;
-};
+"use client";
 
-type SiteSettingsResponse = {
-  data: SiteSettings[];
-};
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
 
 const navItems = [
   { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Services", href: "/services" },
+  { name: "Team", href: "/team" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },
-  { name: "Team", href: "/team" },
 ];
 
-export default async function Header() {
-  const response = await fetch(`${STRAPI_URL}/api/site-settings?populate=logo`);
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch site settings");
-  }
-
-  const result: SiteSettingsResponse = await response.json();
-  const siteSettings = result.data[0];
+export default function Header() {
+  const pathname = usePathname();
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-white dark:border-gray-800 dark:bg-gray-950">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link href="/" className="flex items-center">
-          {siteSettings.logo?.url ? (
-            <Image
-              src={`${STRAPI_URL}${siteSettings.logo.url}`}
-              alt={siteSettings.name}
-              width={100}
-              height={50}
-              unoptimized
-              loading="eager"
-              className="h-12 w-auto object-contain"
-            />
-          ) : (
-            <span className="text-2xl font-bold text-gray-900">
-              {siteSettings.name}
-            </span>
-          )}
+        <Link
+          href="/"
+          className="text-xl font-bold text-gray-900 dark:text-white"
+        >
+          IFCS
         </Link>
 
-        <nav className="flex gap-6">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-gray-700 transition hover:text-black"
-            >
-              {item.name}
-            </Link>
-          ))}
-          <ThemeToggle />
+        <nav aria-label="Main navigation">
+          <ul className="flex items-center gap-2">
+            {navItems.map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
+
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                      isActive
+                        ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+                        : "text-gray-700 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white"
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+
+            <li className="ml-2">
+              <ThemeToggle />
+            </li>
+          </ul>
         </nav>
       </div>
     </header>

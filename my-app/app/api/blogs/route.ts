@@ -13,7 +13,18 @@ export async function GET() {
       });
     }
 
-    const result = await response.json();
+    const result: unknown = await response.json();
+
+    if (
+      typeof result !== "object" ||
+      result === null ||
+      !("data" in result) ||
+      !Array.isArray(result.data)
+    ) {
+      return new Response("Invalid blog data received", {
+        status: 502,
+      });
+    }
 
     return Response.json(result.data);
   } catch {

@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { STRAPI_URL } from "../../lib/api/config";
 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 MB
+
 export async function GET(request: NextRequest) {
   const imageUrl = request.nextUrl.searchParams.get("url");
 
@@ -14,14 +16,15 @@ export async function GET(request: NextRequest) {
     const url = new URL(imageUrl);
     const strapiUrl = new URL(STRAPI_URL);
 
-   if (
-  url.origin !== strapiUrl.origin ||
-  !url.pathname.startsWith("/uploads/")
-) {
-  return new Response("Invalid image source", {
-    status: 403,
-  });
-}
+    // Only allow images hosted by our configured Strapi server.
+    if (
+      url.origin !== strapiUrl.origin ||
+      !url.pathname.startsWith("/uploads/")
+    ) {
+      return new Response("Invalid image source", {
+        status: 403,
+      });
+    }
 
     const response = await fetch(imageUrl, {
       headers: {
@@ -43,7 +46,23 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return new Response(await response.arrayBuffer(), {
+    const contentLength = response.headers.get("content-length");
+
+    if (contentLength && Number(contentLength) > MAX_IMAGE_SIZE) {
+      return new Response("Image is too large", {
+        status: 413,
+      });
+    }
+
+    const imageBuffer = await response.arrayBuffer();
+
+    if (imageBuffer.byteLength > MAX_IMAGE_SIZE) {
+      return new Response("Image is too large", {
+        status: 413,
+      });
+    }
+
+    return new Response(imageBuffer, {
       headers: {
         "Content-Type": contentType,
         "Cache-Control": "public, max-age=3600",

@@ -48,8 +48,16 @@ function isRichTextBlockArray(value: unknown): value is RichTextBlock[] {
 function RichText({ content }: { content: unknown }) {
   const safeContent = isRichTextBlockArray(content) ? content : [];
 
+  if (safeContent.length === 0) {
+    return (
+      <p className="mt-8 text-gray-600 dark:text-gray-300">
+        No additional content is available for this article.
+      </p>
+    );
+  }
+
   return (
-    <div className="mt-8 space-y-4 leading-8 text-gray-700 dark:text-gray-300">
+    <div className="mt-8 space-y-5 text-lg leading-8 text-gray-700 dark:text-gray-300">
       {safeContent.map((block, index) => {
         if (block.type === "paragraph") {
           return (
@@ -89,20 +97,26 @@ export default async function BlogDetail({
   }
 
   return (
-    <main className="px-6 py-20">
+    <main className="bg-white px-6 py-20 dark:bg-gray-950">
       <article className="mx-auto max-w-3xl">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+        <p className="text-sm font-semibold uppercase tracking-widest text-sky-600">
+          IFCS Insights
+        </p>
+
+        <h1 className="mt-4 text-4xl font-bold leading-tight text-gray-900 dark:text-white md:text-5xl">
           {blog.title}
         </h1>
 
-        <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
           <p>Author: {blog.author}</p>
           <p>Published: {blog.date}</p>
         </div>
 
-        <p className="mt-8 text-lg text-gray-600 dark:text-gray-300">
-          {blog.description}
-        </p>
+        <div className="mt-8 border-l-4 border-sky-500 pl-5">
+          <p className="text-xl leading-8 text-gray-600 dark:text-gray-300">
+            {blog.description}
+          </p>
+        </div>
 
         <RichText content={blog.content} />
       </article>
